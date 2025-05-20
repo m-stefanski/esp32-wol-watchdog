@@ -19,6 +19,7 @@ It is intended use case it to wake up devices after power shortage, in case they
 1. Copy `src/config.sample.h` to `config.h`
 2. Fill in all the variables, make sure you put IP and MAC adresses in the same order!
 3. Build and upload to ESP32 
+4. Plug in ESP32 outside of UPS protected outlet, so it only attempts restart when the power is back on
 
 ## License
 

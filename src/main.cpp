@@ -3,7 +3,6 @@
 #include <ESP32Ping.h>
 #include <WiFiUdp.h>
 #include <WakeOnLan.h>
-#include "esp_log.h"
 
 #include "config.h"
 
@@ -17,22 +16,23 @@ void setup()
 {
     Serial.begin(115200);
     Serial.println("esp32-wol-watchdog starting...");
+}
 
-    // continuously try to connect to defined WiFi network
-
-    WiFi.begin(wifi_ssid, wifi_password);
-
-    Serial.print("Connecting to WiFi");
-    while (WiFi.status() != WL_CONNECTED) {
-        delay(500);
-        Serial.print(".");
+void checkAndConnectWifi(){
+    // check if WiFi is connected
+    if (WiFi.status() != WL_CONNECTED) {
+        WiFi.disconnect();
+        WiFi.begin(wifi_ssid, wifi_password);
+        Serial.print("Connecting to WiFi");
+        while (WiFi.status() != WL_CONNECTED) {
+            delay(500);
+            Serial.print(".");
+        }
+        Serial.print("Connected to WiFi, IP Address: ");
+        Serial.println(WiFi.localIP());
+        WOL.calculateBroadcastAddress(WiFi.localIP(), WiFi.subnetMask());
+        Serial.println("Starting continuous ping test...");
     }
-    Serial.print("Connected to WiFi, IP Address: ");
-    Serial.println(WiFi.localIP());
-
-    WOL.calculateBroadcastAddress(WiFi.localIP(), WiFi.subnetMask());
-
-    Serial.println("Initialization done. Starting continuous ping test...");
 }
 
 void checkAndWakeDevices() {
@@ -72,8 +72,9 @@ void sleepForSeconds(int seconds) {
     Serial.println("");
 }
 
-void loop()
-{
+void loop(){
+    // check if WiFi is connected
+    checkAndConnectWifi();
     // wait for const wait_time_sec
     sleepForSeconds(wait_time_sec);
     // perform ping check and send wol if needed
