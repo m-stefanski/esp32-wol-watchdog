@@ -28,7 +28,7 @@ void checkAndConnectWifi(){
             delay(500);
             Serial.print(".");
         }
-        Serial.print("Connected to WiFi, IP Address: ");
+        Serial.print("\nConnected to WiFi, IP Address: ");
         Serial.println(WiFi.localIP());
         WOL.calculateBroadcastAddress(WiFi.localIP(), WiFi.subnetMask());
         Serial.println("Starting continuous ping test...");
